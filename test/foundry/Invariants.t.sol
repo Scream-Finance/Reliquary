@@ -20,12 +20,12 @@ contract Invariants is Test {
 
     function setUp() public {
         ERC20DecimalsMock oath = new ERC20DecimalsMock("Oath Token", "OATH", 18);
-        reliquary = new Reliquary(address(oath), address(new Constant()));
+        reliquary = new Reliquary(address(oath), address(new Constant()), "Reliquary Deposit", "RELIC");
         oath.mint(address(reliquary), 100_000_000 ether);
         ERC20DecimalsMock testToken = new ERC20DecimalsMock("Test Token", "TT", 6);
         address nftDescriptor = address(new NFTDescriptor(address(reliquary)));
         reliquary.grantRole(keccak256(bytes("OPERATOR")), address(this));
-        reliquary.addPool(1000, address(testToken), address(0), curve, levels, "Test Token", nftDescriptor);
+        reliquary.addPool(1000, address(testToken), address(0), curve, levels, "Test Token", nftDescriptor, true);
 
         ReliquaryUser user = new ReliquaryUser(address(reliquary), address(testToken));
         Skipper skipper = new Skipper();
@@ -45,10 +45,5 @@ contract Invariants is Test {
             uint balance = IERC20(reliquary.poolToken(i)).balanceOf(address(reliquary));
             assertEq(totals[i], balance);
         }
-    }
-
-    function targetContracts() public view returns (address[] memory targetContracts_) {
-        require(_targetContracts.length != uint(0), "NO_TARGET_CONTRACTS");
-        return _targetContracts;
     }
 }

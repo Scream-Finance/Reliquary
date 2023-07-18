@@ -25,7 +25,7 @@ contract ReliquaryTest is ERC721Holder, Test {
     function setUp() public {
         oath = new ERC20DecimalsMock("Oath Token", "OATH", 18);
         address curve = address(new Constant());
-        reliquary = new Reliquary(address(oath), curve);
+        reliquary = new Reliquary(address(oath), curve, "Reliquary Deposit", "RELIC");
 
         oath.mint(address(reliquary), 100_000_000 ether);
 
@@ -33,7 +33,9 @@ contract ReliquaryTest is ERC721Holder, Test {
         nftDescriptor = address(new NFTDescriptor(address(reliquary)));
 
         reliquary.grantRole(keccak256("OPERATOR"), address(this));
-        reliquary.addPool(100, address(testToken), address(0), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor);
+        reliquary.addPool(
+            100, address(testToken), address(0), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor, true
+        );
 
         testToken.mint(address(this), 100_000_000 ether);
         testToken.approve(address(reliquary), type(uint).max);
@@ -297,7 +299,7 @@ contract ReliquaryTest is ERC721Holder, Test {
         oath.mint(address(rewarder), 1_000_000 ether);
 
         reliquary.addPool(
-            100, address(testToken), address(rewarder), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor
+            100, address(testToken), address(rewarder), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor, true
         );
 
         uint relicId = reliquary.createRelicAndDeposit(address(this), 1, 1 ether);
@@ -318,7 +320,7 @@ contract ReliquaryTest is ERC721Holder, Test {
         childToken.mint(child, 1_000_000 ether);
 
         reliquary.addPool(
-            100, address(testToken), address(parent), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor
+            100, address(testToken), address(parent), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor, true
         );
 
         uint relicId = reliquary.createRelicAndDeposit(address(this), 1, 1 ether);

@@ -24,7 +24,7 @@ contract GymTest is ERC721Holder, Test {
         ERC20DecimalsMock oath = new ERC20DecimalsMock("Oath Token", "OATH", 18);
         address curve = address(new Constant());
 
-        reliquary = new ReliquaryGamified(address(oath), curve);
+        reliquary = new ReliquaryGamified(address(oath), curve, "Gamified Reliquary", "GREL");
 
         ERC20DecimalsMock testToken = new ERC20DecimalsMock("Test Token", "TT", 6);
         testToken.mint(address(this), 100_000_000 ether);
@@ -33,7 +33,9 @@ contract GymTest is ERC721Holder, Test {
         address nftDescriptor = address(new NFTDescriptor(address(reliquary)));
 
         reliquary.grantRole(keccak256("OPERATOR"), address(this));
-        reliquary.addPool(100, address(testToken), address(0), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor);
+        reliquary.addPool(
+            100, address(testToken), address(0), requiredMaturity, allocPoints, "ETH Pool", nftDescriptor, true
+        );
 
         gym = new Gym(address(reliquary));
         reliquary.grantRole(MATURITY_MODIFIER, address(gym));
